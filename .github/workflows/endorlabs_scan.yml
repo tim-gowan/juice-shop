@@ -1,0 +1,48 @@
+name: Endor Labs CI Scan (API Key Auth)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  endor-labs-scan:
+    # Do NOT include id-token: write as we're using API Key authentication
+    permissions:
+      contents: read # Required to checkout the repository
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4 # Use the latest version
+
+      - name: Setup Node.js Environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18' # Adjust Node.js version as needed for juice-shop
+
+      - name: Install Dependencies
+        # This step prepares the environment for scanning by installing the project's dependencies
+        run: npm install
+
+      - name: Run Endor Labs Scan
+        uses: endorlabs/github-action@v1 # Use the main action for scanning
+        with:
+          # Required Common Parameters
+          namespace: "your-namespace" # 💡 REPLACE with your actual Endor Labs namespace
+          api_key: ${{ secrets.ENDOR_API_CREDENTIALS_KEY }}
+          api_secret: ${{ secrets.ENDOR_API_CREDENTIALS_SECRET }}
+          enable_github_action_token: false # Disable OIDC auth, use API Key/Secret
+
+          # Scanning Parameters (Customizable)
+          scan_dependencies: true # Scan the project dependencies (OSS)
+          scan_secrets: true      # Scan for secrets in the codebase
+          scan_sast: true         # Scan with SAST
+          scan_path: "."          # Scan the root directory
+          
+          # PR-specific settings (Optional, but good practice for CI)
+          # Only run the PR-specific scan if the workflow was triggered by a pull_request event
+          pr: ${{ github.event_name == 'pull_request' }}
+          pr_incremental: true
+          pr_baseline: ${{ github.base_ref }} # Automatically set baseline to the target branch (e.g., 'main')
