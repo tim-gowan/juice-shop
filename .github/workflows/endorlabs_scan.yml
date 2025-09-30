@@ -30,7 +30,7 @@ jobs:
         uses: endorlabs/github-action@v1 # Use the main action for scanning
         with:
           # Required Common Parameters
-          namespace: "your-namespace" # 💡 REPLACE with your actual Endor Labs namespace
+          namespace: "endor-solutions-tgowan" # 💡 REPLACE with your actual Endor Labs namespace
           api_key: ${{ secrets.ENDOR_API_CREDENTIALS_KEY }}
           api_secret: ${{ secrets.ENDOR_API_CREDENTIALS_SECRET }}
           enable_github_action_token: false # Disable OIDC auth, use API Key/Secret
@@ -44,5 +44,5 @@ jobs:
           # PR-specific settings (Optional, but good practice for CI)
           # Only run the PR-specific scan if the workflow was triggered by a pull_request event
           pr: ${{ github.event_name == 'pull_request' }}
-          pr_incremental: true
+          # pr_incremental: true
           pr_baseline: ${{ github.base_ref }} # Automatically set baseline to the target branch (e.g., 'main')
