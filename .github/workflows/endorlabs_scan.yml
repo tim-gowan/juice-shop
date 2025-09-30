@@ -20,7 +20,7 @@ jobs:
       - name: Setup Node.js Environment
         uses: actions/setup-node@v4
         with:
-          node-version: '18' # Adjust Node.js version as needed for juice-shop
+          node-version: '20' # Adjust Node.js version as needed for juice-shop
 
       - name: Install Dependencies
         # This step prepares the environment for scanning by installing the project's dependencies
